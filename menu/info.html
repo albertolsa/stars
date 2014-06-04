@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Stars</title>
+      <link href="../res/popup.css" type="text/css" rel="stylesheet">
+	  <script>
+		function removeMargin()
+		{
+			document.getElementById('infoPopup').removeAttribute('margin');
+		}
+	  </script>
+   </head>
+   <body class="popup_page" id="infoPopup" onload="removeMargin()">
+		<span class="black">Stars</span> extiende la información del catálogo de películas de <a href="https://go.tv.movistar.es" alt="Movistar Go" target="_blank">Movistar Go</a>, <a href="https://www.vivoplay-vivo.com.br/" alt="Vivo Play" target="_blank">Vivo Play</a>, <a href="https://www.movistarplay.cl/" alt="Movistar Play (Chile)" target="_blank">Movistar Play (Chile)</a> y <a href="https://web.onvideo.com.ar/" alt="On Video (Argentina)" target="_blank">On Video (Argentina)</a>.
+		<br>
+		La información extra se añade tratando de respetar la UX original, pero señalada con un icono al lado <img src="../img/stars10.png" alt="Stars logo" />, destacando la inclusión de la valoración media y el número de votos.
+		<br>
+		En ocasiones la extensión puede que no haga el match correctamente de la película con la información mostrada. Estamos trabajando en mejorar el algoritmo para evitar estos errores :).
+		<hr>
+		- "Este producto usa la API de TMDb, pero no está certificado por TMDb."/"This product uses the TMDb API but is not endorsed or certified by TMDb." <img src="../img/tmdb-logo-s.png" alt="TMDb logo" />
+		<br>
+		- <span class="black">Stars</span> usa la <a href="https://github.com/cavestri/themoviedb-javascript-library/" alt="Github" target="_blank">librería javascript</a> ofrecida por Franco Cavestri para interactuar con TMDb.
+		<br>
+   </body>
+</html>

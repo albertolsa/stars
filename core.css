@@ -1,0 +1,90 @@
+div .extraRateNode  {
+line-height: 20px;
+/* color: #37c1ea; */
+color: #51c6d9;
+letter-spacing: 1px;
+font-size: 9px;
+font-weight: normal;
+text-transform: uppercase;
+margin: 0 10px 0;
+padding-top: 5px;
+}
+
+div .rateNode  {
+text-align:center;
+font-size:16px;
+}
+/*
+div .movieVote  {
+z-index: 99; 
+text-align: center; 
+font-weight:bold; 
+font-family: font-family: Book Antiqua, Palatino, Palatino Linotype, Palatino LT STD, Georgia, serif; 
+width: 28px; 
+height: 28px; 
+border: 3px #574629 inset; 
+background-color: #fbeb23; 
+padding: 0px; 
+border-radius: 190px; 
+border-top-left-radius: 0px;
+border-top-right-radius: 100px; 
+display: block; 
+position: absolute; 
+color: black; 
+font-size: 16px; 
+background-image: url('img\ratingImage.png');
+}*/
+
+div .movieVote{
+/*background-color:rgba(27, 87, 119, 0.901961);*/
+/*background-color:rgba(35, 95, 193,0.9);*/
+background-color:rgba(7, 77, 106, 0.8);
+font-family:'HeadlineRegular', sans-serif;
+color:#ffd700;
+width:140px;
+height:18px;
+display:block;
+opacity:1;
+font-size: 12px;
+margin-top:-206px;
+position: absolute; 
+/*text-transform: uppercase;*/
+vertical-align:bottom;
+}
+
+div .movieVoteMid{
+font-size:12px;
+float:left;
+vertical-align:bottom;
+height:100%;
+width:100%;
+text-align:center;
+}
+
+.movieVoteMidPlus{
+font-size:15px;
+}
+
+.popbox {
+    display: none;
+    position: absolute;
+    z-index: 99999;
+    width: 200px;
+    padding: 10px;
+    background: #1B5777;
+    color: #FFFFFF;
+    border: 1px solid #003C5A;
+    margin: 0px;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(164, 164, 164, 1);
+    box-shadow: 0px 0px 5px 0px rgba(164, 164, 164, 1);
+}
+.popbox h2
+{
+    background-color: #002C42;
+    color:  #FFFFFF;
+    font-size: 14px;
+    display: block;
+    width: 100%;
+    margin: -10px 0px 8px -10px;
+    padding: 5px 10px;
+}
