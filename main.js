@@ -7,6 +7,9 @@ var starImage = chrome.extension.getURL("img/stars10.png");
 
 var dataPopbox = '<div id="pop1" class="popbox"><h2>Stars plug-in <img src="'+starImage+'" alt="Stars extras" /></h2><p>Información extraída de TheMovieDB.org.</p></div>';
 
+var PRODUCT_TYPE_INT = 2;
+var PRODUCT_TYPE_TEXT = 'Movie';
+
 var moveLeft = 0;
 var moveDown = 0;
 
@@ -42,7 +45,7 @@ window.addEventListener('load', function (e) {
   {
 	var movieId = $("#ProductTypeID").attr('productid');
 	var productType = $("#ProductTypeID").val();
-	if (productType == 'Movie'){	
+	if (productType == PRODUCT_TYPE_TEXT){	
 		var storedInfo = localStorage.getItem(movieId);
 		var loadedMovie = new Movie(storedInfo, true);
 		if (loadedMovie !== null && loadedMovie !== undefined)
@@ -136,8 +139,7 @@ function updateMoviesList()
 {
 	$("div .poster").each(function()
 	{
-		var $that = $(this);
-		//logger('ping');
+		var $that = $(this);		
 		if (!$that.find('.movieVote').length) 
 		{
 		// not found!
@@ -146,7 +148,7 @@ function updateMoviesList()
 			var productType = $that.find('span.status').attr('product-type');
 			logger("Product-type: "+productType);
 			
-			if (productType == '2')
+			if (productType == PRODUCT_TYPE_INT)
 			{
 				logger("isMovie");
 				var storedJson = localStorage.getItem(movieId);
@@ -164,9 +166,6 @@ function updateMoviesList()
 					{
 						// cache should be renewed
 						logger("renew cache");
-						// var filmName = $("div .secTitle").find("h1").text();
-						// var filmName2 = filmName.split("(Subtitulada)");
-						// filmName = filmName2[0].trim();
 						theMovieDb.search.getMovie({"query":encodeURIComponent(movie.title)}, 
 						function successCB(data) {
 							//console.log("Success callback: " + data);
@@ -234,7 +233,6 @@ function getMovieFromDB(key) {
 }
 
 function isValidDate(subject){
-  //if (subject.match(/^(?:(0[1-9]|1[012])[\- \/.](0[1-9]|[12][0-9]|3[01])[\- \/.](19|20)[0-9]{2})$/)){
   if (subject.match(/^(?:(19|20)[0-9]{2})[\- \/.](0[1-9]|1[012])[\- \/.](0[1-9]|[12][0-9]|3[01])$/)){
     return true;
   }else{
@@ -251,6 +249,6 @@ function logger(toLog){
 
 function paintRating($node, rating, count){
 	var movieVote = '<div class="movieVote"><div class="movieVoteMid">Valoración: &nbsp<span class="movieVoteMidPlus">'+rating+'</span>&nbsp(<img src="'+starImage+'" class="starsPopup" class="starsPopup" alt="Stars extras" data-popbox="pop1">x'+ count+')</div>';
-	var $nodeA = $node.find('a').eq(0);//.eq(0);
+	var $nodeA = $node.find('a').eq(0);
 	$nodeA.append(movieVote);
 }
