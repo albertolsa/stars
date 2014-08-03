@@ -241,10 +241,10 @@ function updateMoviesList()
 							{
 								paintRating($that, movieUpdated.vote_average, movieUpdated.vote_count);
 							}
-							else
-							{
-								paintRating($that, 0, 0);
-							}
+							// else
+							// {
+								// paintRating($that, 0, 0);
+							// }
 						}, errorCB);
 					}
 					else
@@ -254,10 +254,10 @@ function updateMoviesList()
 						{
 							paintRating($that, movie.vote_average, movie.vote_count);
 						}
-						else
-						{
-							paintRating($that, 0, 0);
-						}
+						// else
+						// {
+							// paintRating($that, 0, 0);
+						// }
 					}
 				}
 				else
@@ -276,10 +276,10 @@ function updateMoviesList()
 							{
 								paintRating($that, movie.vote_average, movie.vote_count);
 							}
-							else
-							{
-								paintRating($that, 0, 0);
-							}
+							// else
+							// {
+								// paintRating($that, 0, 0);
+							// }
 						}, errorCB);
 				}
 			}
