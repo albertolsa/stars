@@ -1,27 +1,23 @@
-﻿{
-  "manifest_version": 2,
+{
   "name": "Stars",
-  "version": "0.11",
-  
-  "description": "Stars, extiende la información de tus películas.",
-  "icons":{
-	"128": "img/stars128.png"
-  },
-  
-  "browser_action": {
-    "default_icon": "img/stars128.png",
-	"default_popup": "popup.html"
-  },
-  
+  "description": "Stars",
+  "version": "0.1",
   "permissions": [
     "activeTab", "storage"
   ],
 
+  "browser_action": {
+    "default_icon": "img/stars128.png",
+	"default_popup": "popup.html"
+  },
+  "icons":{
+	"128": "img/stars128.png"
+  },
   "content_scripts": [
     {
-      "matches": ["http://go.tv.movistar.es/*","https://go.tv.movistar.es/*","http://www.movistarplay.cl/*","https://www.movistarplay.cl/*","http://www.vivoplay-vivo.com.br/*","https://www.vivoplay-vivo.com.br/*", "https://web.onvideo.com.ar/*", "http://web.onvideo.com.ar/*"],
-      "css": ["core.css", "res/popup.css"],
-      "js": ["main.js", "movie.js", "res/jquery-1.11.0.min.js","res/themoviedb.min.js"],
+      "matches": ["http://go.tv.movistar.es/*","https://go.tv.movistar.es/*","http://www.movistarplay.cl/*","https://www.movistarplay.cl/*","http://es-pre.labs.gvp.telefonica.com/*"],
+      "css": ["core.css", "res/popup.css", "res/jquery-ui.css"],
+      "js": ["main.js", "movie.js","trailer.js", "res/jquery-1.11.0.min.js","res/themoviedb.min.js", "res/jquery-ui.min.js", "res/jquery.youtubepopup.min.js"],
       "run_at": "document_end",
       "all_frames": true
     }
@@ -30,7 +26,10 @@
        "img/rating.png",
        "img/person.png",
        "img/stars10.png",
-       "img/stars128.png"
-     ]
-
+       "img/stars128.png",
+	   "img/*.png",
+	   "img/*.gif",
+	   "res/*.*"
+	   ],
+  "manifest_version": 2
 }

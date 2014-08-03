@@ -1,17 +1,16 @@
-﻿var enableLog = false;
+﻿var enableLog = true;
 var i = 0;
 var cacheFound = 24*3600;
 var cacheNotFound = 24*3600;
 var ratingImage = chrome.extension.getURL("img/rating.png");
 var starImage = chrome.extension.getURL("img/stars10.png");
+var youtubeUrl = "https://www.youtube.com/watch?v=";
 
 var dataPopbox = '<div id="pop1" class="popbox"><h2>Stars plug-in <img src="'+starImage+'" alt="Stars extras" /></h2><p>Información extraída de TheMovieDB.org.</p></div>';
 
-var PRODUCT_TYPE_INT = 2;
-var PRODUCT_TYPE_TEXT = 'Movie';
-
 var moveLeft = 0;
 var moveDown = 0;
+var typeMovie = '2';
 
 function DOMModificationHandler(){
     $(this).unbind('DOMSubtreeModified.event1');
@@ -45,10 +44,11 @@ window.addEventListener('load', function (e) {
   {
 	var movieId = $("#ProductTypeID").attr('productid');
 	var productType = $("#ProductTypeID").val();
-	if (productType == PRODUCT_TYPE_TEXT){	
+	if (productType == 'Movie'){	
 		var storedInfo = localStorage.getItem(movieId);
 		var loadedMovie = new Movie(storedInfo, true);
-		if (loadedMovie !== null && loadedMovie !== undefined)
+		logger('movie loaded');
+		if (loadedMovie !== null && loadedMovie !== undefined && loadedMovie.original_title !== undefined)
 		{
 			var extraInfoNode = "";
 			if (loadedMovie.original_title !== null && loadedMovie.original_title !== undefined)
@@ -63,6 +63,62 @@ window.addEventListener('load', function (e) {
 				var m = releaseDateObject.getMonth();
 				var y = releaseDateObject.getFullYear();
 				extraInfoNode += '<dt>Fecha de estreno:</dt><dd>'+d+'-'+(m+1)+'-'+y+' <img src="'+starImage+'" class="starsPopup" alt="Stars extras" data-popbox="pop1"></dd>';
+			}
+			
+			var linkYoutube = '';
+			
+			
+			if ($(".actions").find("li .btnTrailer").length === 0)
+			{
+				logger("no trailer");
+				if (loadedMovie.trailer !== null && loadedMovie.trailer !== undefined)
+				{
+					linkYoutube = youtubeUrl + loadedMovie.trailer; //youtubeUrl+jsonTrailer.youtube[0].source;
+					var extraTrailer = '<li><a tag-type="trailerbutton" id="divTraileStars" href="'+linkYoutube+'" title="Tráiler" class="btnTrailer">Tráiler&nbsp<img src="'+starImage+'" class="starsPopup" alt="Stars extras" data-popbox="pop1"></a></li>';
+					$(".actions").prepend(extraTrailer);
+					$("#divTraileStars").YouTubePopup({hideTitleBar: true, showBorder: true});
+				}
+				else
+				{
+					var extraTrailer = '<li style="display: none;" id="liDivTraileStars" ><a tag-type="trailerbutton" id="divTraileStars" href="#linkYoutube" title="Tráiler" class="btnTrailer">Tráiler&nbsp<img src="'+starImage+'" class="starsPopup" alt="Stars extras" data-popbox="pop1"></a></li>';
+					$(".actions").prepend(extraTrailer);
+					$("#divTraileStars").YouTubePopup({hideTitleBar: true, showBorder: true});
+					
+					theMovieDb.movies.getTrailers({"id":loadedMovie.id, "language":"es"}, 
+						function successCB(data) {
+							//console.log("Success callback: " + data);
+							logger(data);
+							var response = manageResponseTrailers(data);
+							if (response != '')
+							{
+								var linkYoutube = youtubeUrl + response;
+								loadedMovie.trailer = response;
+								loadedMovie.saveLocal(movieId);
+								
+								$('#divTraileStars').attr("href", linkYoutube);
+								$('#liDivTraileStars').show();
+							}
+							else
+							{
+								console.log("Getting eng trailer");
+								theMovieDb.movies.getTrailers({"id":loadedMovie.id, "language":"en"}, 
+								function successCB(data) {
+									//console.log("Success callback: " + data);
+									logger(data);
+									var response = manageResponseTrailers(data);
+									if (response != '')
+									{
+										var linkYoutube = youtubeUrl + response;
+										loadedMovie.trailer = response;
+										loadedMovie.saveLocal(movieId);
+										
+										$('#divTraileStars').attr("href", linkYoutube);
+										$('#liDivTraileStars').show();
+									}
+								}, errorCB);
+							}
+						}, errorCB);
+				}
 			}
 
 			$("div .detailsInfo").find(".cast").prepend(extraInfoNode);
@@ -139,7 +195,8 @@ function updateMoviesList()
 {
 	$("div .poster").each(function()
 	{
-		var $that = $(this);		
+		var $that = $(this);
+		//logger('ping');
 		if (!$that.find('.movieVote').length) 
 		{
 		// not found!
@@ -148,7 +205,7 @@ function updateMoviesList()
 			var productType = $that.find('span.status').attr('product-type');
 			logger("Product-type: "+productType);
 			
-			if (productType == PRODUCT_TYPE_INT)
+			if (productType == typeMovie)
 			{
 				logger("isMovie");
 				var storedJson = localStorage.getItem(movieId);
@@ -166,10 +223,19 @@ function updateMoviesList()
 					{
 						// cache should be renewed
 						logger("renew cache");
-						theMovieDb.search.getMovie({"query":encodeURIComponent(movie.title)}, 
+
+						var queryTitle = movie.title;
+						if (queryTitle == undefined || queryTitle == null)
+						{
+							var filmName = $that.find("h3").text();
+							var filmName2 = filmName.split("(Subtitulada)");
+							queryTitle = filmName2[0].trim();
+						}
+						logger("queryTitle :"+queryTitle);
+						theMovieDb.search.getMovie({"query":encodeURIComponent(queryTitle)}, 
 						function successCB(data) {
 							//console.log("Success callback: " + data);
-							var movieUpdated = new Movie(data, false, filmName);
+							var movieUpdated = new Movie(data, false, queryTitle);
 							movieUpdated.saveLocal(movieId);
 							if (movieUpdated.total_results > 0)
 							{
@@ -200,6 +266,7 @@ function updateMoviesList()
 					var filmName2 = filmName.split("(Subtitulada)");
 					filmName = filmName2[0].trim();
 					logger("not found: "+filmName);
+					logger("queryTitle :"+filmName);
 					theMovieDb.search.getMovie({"query":encodeURIComponent(filmName)}, 
 						function successCB(data) {
 							//console.log("Success callback: " + data);
@@ -233,6 +300,7 @@ function getMovieFromDB(key) {
 }
 
 function isValidDate(subject){
+  //if (subject.match(/^(?:(0[1-9]|1[012])[\- \/.](0[1-9]|[12][0-9]|3[01])[\- \/.](19|20)[0-9]{2})$/)){
   if (subject.match(/^(?:(19|20)[0-9]{2})[\- \/.](0[1-9]|1[012])[\- \/.](0[1-9]|[12][0-9]|3[01])$/)){
     return true;
   }else{
@@ -249,6 +317,11 @@ function logger(toLog){
 
 function paintRating($node, rating, count){
 	var movieVote = '<div class="movieVote"><div class="movieVoteMid">Valoración: &nbsp<span class="movieVoteMidPlus">'+rating+'</span>&nbsp(<img src="'+starImage+'" class="starsPopup" class="starsPopup" alt="Stars extras" data-popbox="pop1">x'+ count+')</div>';
-	var $nodeA = $node.find('a').eq(0);
+	var $nodeA = $node.find('a').eq(0);//.eq(0);
 	$nodeA.append(movieVote);
+}
+
+function playLol(url)
+{
+logger("play"+url);
 }

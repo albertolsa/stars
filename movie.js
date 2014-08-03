@@ -11,6 +11,7 @@ function Movie(jsonMovie, local, title ){
 		this.total_results = jsonObj.total_results;
 		this.vote_average = jsonObj.vote_average;
 		this.vote_count = jsonObj.vote_count;
+		this.trailer = jsonObj.trailer;
 	}
 	else
 	{
@@ -43,6 +44,7 @@ function Movie(jsonMovie, local, title ){
 			this.total_results = jsonObj.total_results;
 			this.vote_average = movObj.vote_average;
 			this.vote_count = movObj.vote_count;
+			this.trailer = '';
 		}
 		else
 		{
